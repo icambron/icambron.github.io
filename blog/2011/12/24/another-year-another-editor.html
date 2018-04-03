@@ -1,0 +1,74 @@
+<html><head lang="en"><meta charset="utf-8" /><meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1.0" name="viewport" /><title>Another year, another editor</title><link href="/stylesheets/main.css" rel="stylesheet" /><script src="/javascripts/main.js"></script></head><body><div class="navbar navbar-inverse"><div class="navbar-header"><button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse"><span class="sr-only">Toggle navigation</span><span class="fa fa-bars"></span></button><a class="navbar-brand" href="/">Isaac</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li><a href="/">About</a></li><li><a href="/projects.html">OSS Projects</a></li><li><a href="/resume.html">Resume</a></li><li><a href="/blog">Blog</a></li></ul></div></div><div class="container"><div id="blog"><div id="blog-info"><div id="blog-info-content"><h4>Isaac Cambron</h4><p><a href="http://twitter.com/icambron">@icambron</a></p><p><i class="fa fa-caret-left"></i> <a href="/blog">Back to blog</a></p></div></div><div id="blog-articles"><div class="blog-article"><div class="blog-content"><h2><a href="/blog/2011/12/24/another-year-another-editor.html">Another year, another editor</a></h2><p class="blog-date">Dec 24, 2011</p><h3>The constant search</h3>
+
+<p>I&rsquo;m pretty much always looking for a new text editor. Every once in a while, I get pissed off enough at Emacs to sit down with a six-pack and a freshly downloaded editor and see if I can, you know, use the damn thing. I usually last about 15 minutes before I go scurrying back to Emacs, tail between my legs and slightly drunk.</p>
+
+<p><a href="/blog/images/emacs.png"><img src="/blog/images/emacs_small.png" alt="Where I spend my day" /></a></p>
+
+<p>The thing is, I hate Emacs. It&rsquo;s terrible at so many things. Its ecosystem is a clusterfuck of poorly maintained modes and broken extensions. It&rsquo;s chalk full of  interface idiosyncrasies that make it painful when toggling between other programs. The default keybindings require you to make a cat&rsquo;s cradle with your fingers. The shell is broken in half a dozen ways. ELisp is weird. And goddamn is Emacs slow.</p>
+
+<p>And yet&hellip;I come back to it every time. It&rsquo;s the editor I can&rsquo;t break up with. This is not because it has some special place in my heart; it&rsquo;s because every other editor really blows. They require you to use the mouse to do the most basic things. They throw weird dialogs at you, and those dialogs break all the conventions the rest of the editor uses. They think in files instead of buffers. They provide you cool autocomplete and go-to-definition features but ignore your need to actually edit text. They come with crummy defaults and then make them painful to change.</p>
+
+<p>All that, and I&rsquo;m actually a <em>casual</em> Emacs user. I&rsquo;m not one of those guys with 5000-line .emacs files who check their email in it. For all my time using it, I&rsquo;m a noob in Emacs land, struggling to efficiently edit text. It&rsquo;s just that it sucks less than other editors.</p>
+
+<p>But that doesn&rsquo;t stop me from trying to do better. Here at Drunken Coder, we&rsquo;re always stumbling blindly into the arms of new, shiny editors, having sloppy one-night stands with them, and never calling them back.</p>
+
+<h3>A brief history of time</h3>
+
+<p>Sometimes those one-night stands turn into flings, or get drawn out into rebound relationships driven by some particularly nasty fight with E (we&rsquo;re going to call it E from now, I&rsquo;ve just decided). They&rsquo;re not necessarily any better than the quickly discarded JEdits and Bluefishes and so on; it&rsquo;s just that they stuck around somehow. Maybe it&rsquo;s just that they wanted me? Here are the ones who made it to a second date:</p>
+
+<ul>
+<li><p>Eclipse/RAD - It knows Java and understood the <s>Byzantine boondoggle</s> <a href="http://en.wikipedia.org/wiki/IBM_Workplace">sophisticated project</a> I was working on. Otherwise, Eclipse is just a bloated, sluggish mess of menus and modes and clicking and NullPointerExceptions.</p></li>
+<li><p><a href="http://www.slickedit.com/products/slickedit">SlickEdit</a> - It&rsquo;s great at editing text, is hugely customizable, and has a few <a href="http://www.slickedit.com/products/slickedit/cool-features#surroundwith">features</a> I still miss. But it&rsquo;s ugly, the UI is awkward, the customizations are in a weird C-like language, and&mdash;when I used it&mdash;it couldn&rsquo;t parse non-ancient versions of C#. Oh, and it&rsquo;s expensive and you have to pay each year to keep up.</p></li>
+<li><p>Visual Studio - Can parse C#, but is completely unhelpful without an <a href="http://www.jetbrains.com/resharper/">expensive third-party plugin</a> (which is itself very nice). More importantly, VS may be the <em>worst text editor I&rsquo;ve ever used</em>. Seriously, just awful. And out of contention anyway &mdash; I don&rsquo;t run Windows anymore.</p></li>
+<li><p>RubyMine - It&rsquo;s packed with nice Ruby features and it runs well on Linux, but it can&rsquo;t escape its Eclipse heritage. Too clunky.</p></li>
+</ul>
+
+<p>My number one issue with random editors, if you want to know the slightly inebriated and tangential truth, is that they don&rsquo;t treat their menus as first-class buffers. They&rsquo;ve let you make whatever customizations you want to how text in the actual file is edited (ctrl+k for &ldquo;kill line&rdquo; or ctrl+~ ctrl+\ for &ldquo;transpose then upcase then wrap in playful emoticons&rdquo; or whatever), but those customizations don&rsquo;t work when you&rsquo;ve called up a file switcher dialog, because the guy who wrote it just used the system&rsquo;s text box control. It&rsquo;s fucking infuriating.</p>
+
+<h3>Sublime Text 2</h3>
+
+<p>I&rsquo;ve been working in Rails and Node and random stuff for almost two years now, and I&rsquo;m once again tired of E. In fact, it&rsquo;s been doing this weird thing where sometimes the text disappears for no reason. Also, I have now tried every JS mode I can find and not one is even passable. I could debug all that or hack away at a JS mode until it does what I want, but then again, I could also be hacking on something new and exciting instead of old and broken, or, you know, doing actual work.</p>
+
+<p>Of course, it&rsquo;s not like any of my old complaints about E have been magically fixed. That thing is stuck in time. It&rsquo;s like hunting with a musket.</p>
+
+<p>It&rsquo;s time for another breakup.</p>
+
+<p>Enter the new flavor of the week. <a href="http://www.sublimetext.com/">Sublime Text 2</a> is gorgeous, fast, and customizable. And it&rsquo;s made it past round one: can I stand it?</p>
+
+<p><a href="/blog/images/sublime.png"><img src="/blog/images/sublime_small.png" alt="Subliminal messages" /></a></p>
+
+<p>Bullet points? Bullet points:</p>
+
+<ul>
+<li><p>It&rsquo;s really clean and acts like a real text editor.</p></li>
+<li><p>It uses TextMate language modes, so it taps into a big existing ecosystem (I&rsquo;ve been amazed at how much better its understanding of Ruby is than my Emacs mode).</p></li>
+<li><p>It&rsquo;s got that cool minimap. I can&rsquo;t even imagine how that would ever be useful, but it&rsquo;s sexy as hell. </p></li>
+<li><p>The file switching and code browsing is quite good, though I&rsquo;d rather get rid of the tabs and groups and just have a list of open files.</p></li>
+<li><p>You customize it in Python and there seems to be a solid community around doing just that.</p></li>
+</ul>
+
+<h3>The long hard road out of Hell</h3>
+
+<p>Switching editors is really hard, and I&rsquo;m not where I want to be with Sublime yet. Partially that&rsquo;s my desire to go whole hog. For example I&rsquo;d like to give up the ctrl+x prefix on commands (I&rsquo;m sick of mindlessly hitting them in other programs) even though I think they&rsquo;re mostly reasonable. So there&rsquo;s a steeper learning curve and I keep accidentally closing buffers trying to do kill-region, or cutting text while trying to save a file. It would be like coding drunk if I weren&rsquo;t already coding drunk.</p>
+
+<p>Not there isn&rsquo;t enough mental retraining to do just from switching editors.</p>
+
+<p>I also need to get it customized to where I&rsquo;m actually reasonably productive relative to E, regardless of how painful E is. That&rsquo;s a big time investment and one of the reasons I&rsquo;ve dropped many would-be editors. It doesn&rsquo;t help that the Sublime documentation is almost non-existent and you have to glean even the basic customization paradigm from the support forums. (I&rsquo;m sure it&rsquo;s harder for me; I have the feeling most of the user base is TextMate converts and have some relevant prior knowledge.)</p>
+
+<p>And I already have complaints:</p>
+
+<ul>
+<li><p>I can&rsquo;t seem to make misspelled words not show up in retina-searing red. </p>
+
+<ul>
+<li>Oh, and there seems to be some sort of bug about spell-checking words in brackets. See that in the screenshot?</li>
+</ul></li>
+<li><p>I can&rsquo;t run a terminal in it (for Linux anyway; it has one for Mac). </p></li>
+<li><p>I don&rsquo;t know how to override parts of a theme without forking the whole theme. </p></li>
+<li><p>The mark/kill/yank stuff is poorly implemented and I had to pull in (and edit) a third-party plugin just for that.</p></li>
+<li><p>It&rsquo;s a tiny bit weird with line wraps.</p></li>
+<li><p>There&rsquo;s what I suspect is Linux-specific clunkiness in opening files and projects.</p></li>
+</ul>
+
+<p>So we&rsquo;ll see. I might be slinking back to Emacs a few weeks.</p>
+<a class="pull-right" href="http://github.com/icambron/isaaccambron.com/tree/master/source/blog/2011-12-24-another-year-another-editor.html.markdown">Source</a></div></div></div></div></div><script type="text/javascript">!function(e,a,t,n,c,o,s){e.GoogleAnalyticsObject=c,e[c]=e[c]||function(){(e[c].q=e[c].q||[]).push(arguments)},e[c].l=1*new Date,o=a.createElement(t),s=a.getElementsByTagName(t)[0],o.async=1,o.src=n,s.parentNode.insertBefore(o,s)}(window,document,"script","//www.google-analytics.com/analytics.js","ga"),ga("create","UA-52148016-1","auto"),ga("send","pageview");</script></body></html>

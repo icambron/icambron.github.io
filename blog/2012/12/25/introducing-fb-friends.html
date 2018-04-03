@@ -1,0 +1,27 @@
+<html><head lang="en"><meta charset="utf-8" /><meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1.0" name="viewport" /><title>Introducing FbFriends</title><link href="/stylesheets/main.css" rel="stylesheet" /><script src="/javascripts/main.js"></script></head><body><div class="navbar navbar-inverse"><div class="navbar-header"><button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse"><span class="sr-only">Toggle navigation</span><span class="fa fa-bars"></span></button><a class="navbar-brand" href="/">Isaac</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li><a href="/">About</a></li><li><a href="/projects.html">OSS Projects</a></li><li><a href="/resume.html">Resume</a></li><li><a href="/blog">Blog</a></li></ul></div></div><div class="container"><div id="blog"><div id="blog-info"><div id="blog-info-content"><h4>Isaac Cambron</h4><p><a href="http://twitter.com/icambron">@icambron</a></p><p><i class="fa fa-caret-left"></i> <a href="/blog">Back to blog</a></p></div></div><div id="blog-articles"><div class="blog-article"><div class="blog-content"><h2><a href="/blog/2012/12/25/introducing-fb-friends.html">Introducing FbFriends</a></h2><p class="blog-date">Dec 25, 2012</p><p>FbFriends is a new jQuery plugin for picking Facebook friends from a
+dialog using the Facebook JS SDK. It&rsquo;s written in CoffeeScript and Less;
+you can find the docs and demos <a href="http://icambron.github.com/fbfriends">here</a> and
+the code <a href="http://github.com/icambron/fbfriends">here</a>.</p>
+
+<p>For the lazy, here&rsquo;s a screenshot (and apologies to my friends who showed up here):</p>
+
+<p><img src="/blog/images/fbfriends_screen.png" alt="FbFriends" /></p>
+
+<p>Go check it out; I think it&rsquo;s pretty cool.</p>
+
+<p>Not a ton to say, but here are a few interesting notes about it:</p>
+
+<ol>
+<li><p>I went with the idea that the caller has to provide the dialog
+component. It just seemed dumb to bake in my own and likely you&rsquo;ll want to make
+it look consistent with the dialogs/modals/whatever in the rest of
+your app. So you provide callbacks to open and close whatever
+dialog you want. FbFriends just provides the content.</p></li>
+<li><p>I really didn&rsquo;t want to build this. In fact, the Facebook SDK used to
+have this ability, and they dropped support for it. I wish they hadn&rsquo;t.</p></li>
+<li><p>A lot of Quarrels Harris Port was consumed during the making of this
+library.</p></li>
+</ol>
+
+<p>Oh, and Merry Christmas!</p>
+<a class="pull-right" href="http://github.com/icambron/isaaccambron.com/tree/master/source/blog/2012-12-25-introducing-fb-friends.html.markdown">Source</a></div></div></div></div></div><script type="text/javascript">!function(e,a,t,n,c,o,s){e.GoogleAnalyticsObject=c,e[c]=e[c]||function(){(e[c].q=e[c].q||[]).push(arguments)},e[c].l=1*new Date,o=a.createElement(t),s=a.getElementsByTagName(t)[0],o.async=1,o.src=n,s.parentNode.insertBefore(o,s)}(window,document,"script","//www.google-analytics.com/analytics.js","ga"),ga("create","UA-52148016-1","auto"),ga("send","pageview");</script></body></html>

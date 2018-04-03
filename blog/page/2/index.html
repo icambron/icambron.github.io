@@ -1,0 +1,280 @@
+<html><head lang="en"><meta charset="utf-8" /><meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" /><meta content="width=device-width, initial-scale=1.0" name="viewport" /><title>Isaac Cambron</title><link href="/stylesheets/main.css" rel="stylesheet" /><script src="/javascripts/main.js"></script></head><body><div class="navbar navbar-inverse"><div class="navbar-header"><button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse"><span class="sr-only">Toggle navigation</span><span class="fa fa-bars"></span></button><a class="navbar-brand" href="/">Isaac</a></div><div class="collapse navbar-collapse"><ul class="nav navbar-nav"><li><a href="/">About</a></li><li><a href="/projects.html">OSS Projects</a></li><li><a href="/resume.html">Resume</a></li><li><a href="/blog">Blog</a></li></ul></div></div><div class="container"><div id="blog"><div id="blog-info"><div id="blog-info-content"><h4>Isaac Cambron</h4><p><a href="http://twitter.com/icambron">@icambron</a></p><p><i class="fa fa-rss"></i> <a href="/blog/feed.xml">Feed</a></p></div></div><div id="blog-articles"><p><a href="/blog/">Previous page</a></p><div class="blog-article"><div class="blog-content"><h2><a href="/blog/2012/07/21/sublime-revisited.html">What I want from Sublime</a></h2><p class="blog-date">Jul 21, 2012</p><div class="blog-content-body"><p>I&rsquo;ve been <a href="/blog/another_year_another_editor.html">using Sublime Text 2</a> for 7 months now, and it well past time for me to take a step back and evaluate things. In general, it&rsquo;s a great editor, but there are now one too many things about that bug me. I wanted to write them up. Maybe someone will tell me how to fix them. Maybe they&rsquo;ll actually get fixed by the author. Maybe I&rsquo;ll just feel better having gotten it off my chest.</p>
+
+<p>If any of this sounds nitpicky, I should point out that I spent like 10 hours per day in this program, so what might seem like minor nuisances add up very quickly. Programming is really just a particular kind of text editing, and we ought to have really well-oiled text editor programs. That&rsquo;s partially for efficiency, and that&rsquo;s partly for our happiness. If you were to respond to that by pointing out that if I feel that way, I should really invest more time customizing my editor, I wouldn&rsquo;t disagree. I should probably dig in, learn my way around the API super well, and make it do what I want it to do. But since it&rsquo;s easier to complain about it on the internet, I&rsquo;m going to do that. Then I&rsquo;ll look into fixing it.</p>
+
+<p>It may also be that there are configuration options I don&rsquo;t about that could fix this stuff. If so, I&rsquo;d love to hear them.</p>
+
+<p>Here&rsquo;s my laundry list.</p>
+
+<h3>I want set_mark, yank, and so on to work a bit differently</h3>
+
+<p>One thing I think is profoundly annoying are the disjunctions between cut and delete-to-mark and between paste and yank.</p>
+
+<p>For the uninitiated, in Emacs-speak, you set a mark (usually with ctrl+space), which is a sort of bookmark in the document. Then you move your caret around to wherever you want and then you &ldquo;kill the region&rdquo; (which really just means &ldquo;cut&rdquo;) between your caret and the mark you set before. Later you can &ldquo;yank&rdquo; (basically paste) that text back in. So the big difference here is that the region you keep is modal instead of being an explicit selection (the other big difference is that Emacs keeps a full history of your kills so you can do fancier stuff, but that&rsquo;s not important here).</p>
+
+<p>Sublime has support for this: you can set a mark, you can kill the region, you can yank the region, and you convert the region into a selection. So far so good, but here&rsquo;s the issue: kill/yank and the more standard copy/paste use completely separate buckets to hold stuff. That might sound useful, but in practice it means I have to keep track of (and map) four commands instead of two. Want to paste in something from another program? Use paste. Want to paste in something I killed? Yank. Want to cut something I have selected with the mouse? Use cut then paste, not kill then yank. And we haven&rsquo;t event talked about copy. So that&rsquo;s annoying.</p>
+
+<p>I could get around this by by setting a mark, going where I want to go, using the select_region command, and then cutting. Then I could always use paste. That would work, but it&rsquo;s an extra command (and keybinding) just to kill some text. It&rsquo;s also a deeper problem than just kill/cut: more complicated manifestation is that I can&rsquo;t use to create a region and then hit Tab to add a tab to each line, because that command works on the selection, not this weird other region thing. The issue is that regions and selections are different things.</p>
+
+<p>Slight aside: I&rsquo;ve been using <a href="https://github.com/stiang/EmacsKillRing">EmacsKillRing plugin</a> that partially fixes at least the cut/paste part of this and adds some other Emacsy goodness, but it doesn&rsquo;t really solve the issue that the region isn&rsquo;t a first-class selection, and it has plenty of other issues too.</p>
+
+<p>Anyway, what I want&mdash;I think, anyway&mdash;is just a select lock command. Instead of set_mark, I just want to say:</p>
+
+<blockquote>
+<p>Look, I want my selection to start here. Wherever I go with caret, have the selection follow me, like how it does if I hit shift+up. Then treat my actions like you normally would. Cut cuts, Copy copies, etc.</p>
+</blockquote>
+
+<p>That would add a total of one command and (for my purposes), get rid of all the kill/yank/region stuff. I&rsquo;m a total noob when it comes to customizing ST2, but it seems kinda hard to implement as a plugin: would each command that moves the caret need to be aware of it? Do the actions that get rid of the selection have to be aware of it? It seems like I&rsquo;d have to create my own versions of a lot of editing features to make it work. Or is there something simple I could be doing here?</p>
+
+<h3>The spellcheck face needs to be customizable</h3>
+
+<p>This is really only a problem for me when I&rsquo;m writing blog posts, but since that&rsquo;s what I&rsquo;m doing right now, I&rsquo;m going to complain about it. Spell-as-you-type uses a red squiggly underline, which is very painful to look at with a dark background:</p>
+
+<p><img src="/blog/images/death_to_retinas.png" alt="My eyes!" /></p>
+
+<p>I was unable to find a way to change that, and I did find some posts to the effect of &ldquo;yeah, you can&rsquo;t change that&rdquo;. Bummer.</p>
+
+<h3>Opening an already-open file should move it to the right group</h3>
+
+<p>Sublime has groups, which allow you to split the screen. Files can be moved from group to group so that you can manage your workspace. And you can switch between them easily with the keyboard:</p>
+
+<p><a href="/blog/images/sublime.png"><img src="/blog/images/sublime_small.png" alt="Splities" /></a></p>
+
+<p>Another nice feature of ST is the &ldquo;find a file dialog&rdquo;, which allows you to open any file in your project via an autocompleting search. The cool thing is that if you already have the file open, it just pulls open that tab. The trouble is that these two features don&rsquo;t play well together. If I want to edit an already-open file to the front of my selected group but the file is in some other group, Sublime will open another view on that file. </p>
+
+<p>While it can occasionally be useful to see different parts of a file side by side, that&rsquo;s the exception. One consequence is that you end up with a lot of clutter. If you have three groups and you&rsquo;re working with five files, after enough switching you&rsquo;ll have fifteen tabs open instead of just five. Another is that Sublime is a little quirky with more than one instance of a file open. For example, closing a tab triggers the &ldquo;Don&rsquo;t you want to save this?&rdquo; dialog even if there are other instances open. There are other quirks like that. And that EmacsKillRing plugin we talked about earlier is totally broken in this scenario.</p>
+
+<p>What Sublime should really do is <em>move</em> the file to the current group if it&rsquo;s open already.</p>
+
+<h3>Deleting a file should close the file</h3>
+
+<p>This is the issue that probably causes me the most anguish on a day-to-day basis. You can delete files by right-clicking them off the side bar and clicking delete. Except that it&rsquo;s not. If you have the file open, it&rsquo;ll stay open. &ldquo;Fine&rdquo;, you say, and close it. But ST will think &ldquo;Hmm, that file is different on disk, in that it doesn&rsquo;t exist there. I&rsquo;d better confirm Isaac really doesn&rsquo;t want to save this!&rdquo; and gives me a dialog about whether I want to save the file I JUST DELETED. Like, my intention is literally the opposite of what you&rsquo;re asking about. In fact, it&rsquo;ll do this even if I don&rsquo;t have the file open, because when I right-click on the side bar item, ST opens it in a sort of preview mode, which is normally superuseful, but annoying here because when I close the preview I have to deal with this goddamn dialog.</p>
+
+<p>If I delete a file, ST should close it.</p>
+
+<h3>Fewer dialogs</h3>
+
+<p>Sublime mostly gets out of your way, in that most of the dialogy things are expand out of the top or bottom of your screen and steal focus, as opposed to being a big rude modal dialog. That&rsquo;s a great thing. But Sublime does have big rude dialogs, like &ldquo;There&rsquo;s a new version of Sublime. Would you like to upgrade?&rdquo; or &ldquo;This file has been edited. Would you like to save it?&rdquo;, etc (neither of those are verbatim.) Not only are they jarring, but they&rsquo;re also not very keyboard friendly, and reaching for my mouse to answer a question that could be Y/N makes me sad. Some sort of notification toaster would be better.</p>
+
+<h3>Some keyboard holes</h3>
+
+<p>I really hate using my mouse. Looking up, that&rsquo;s actually what most of this is about. In general, Sublime does a good job here, but there are some holes. One in particular is search results. You can search your hole project, and results are displayed in a buffer. It&rsquo;s really nice and Emacsy and well done: </p>
+
+<p><a href="/blog/images/search_for_stuff.png"><img src="/blog/images/search_for_stuff.png" alt="Next, find things" /></a></p>
+
+<p>But it doesn&rsquo;t have good keyboard support. You have to actually click on those yellow boxes with your mouse; there&rsquo;s no shortcut for that. You can actually iterate through all the results by hitting F4 as many times as you like, which is also nice, but not the same as being able to simply go to the right occurrence in the results and jump to it is frustrating.</p>
+
+<p>I also haven&rsquo;t figured out how to pull up the right-click menu with the keyboard, which would be really nice for selecting spelling alternatives.</p>
+
+<h3>Conclusion</h3>
+
+<p>Some of this I can probably fix with some Python hacking and some patience. Some of it will actually have to be changes in the product. In the meantime, it puts me in this annoying state of <em>almost</em> having a really great editor, but not quite.</p>
+</div><a class="pull-right" href="http://github.com/icambron/isaaccambron.com/tree/master/source/blog/2012-07-21-sublime-revisited.html.markdown">Source</a><div class="clearfix"></div><hr /></div></div><div class="blog-article"><div class="blog-content"><h2><a href="/blog/2012/05/04/if-you-want-to-curse-curse.html">Just fucking say it</a></h2><p class="blog-date">May  4, 2012</p><div class="blog-content-body"><p><a href="http://www.smbc-comics.com/index.php?db=comics&amp;id=1446#comic"><img src="/blog/images/smbc.gif" alt="Haha, she hates dashes!" /></a></p>
+
+<p>I hate the term &ldquo;pet peeve&rdquo;, but that doesn&rsquo;t stop me from having them in spades. Most of them are just geeky annoyances: if you use various programming phrases imprecisely, I will lecture you. At length. Obnoxiously, even, and probably only for the benefit of my own ego. If you act obliviously to the concept of sunk cost, I will put you into the Stupid Until Proven Otherwise bucket. I&rsquo;m a judgmental prick like that. Maybe you&rsquo;re pathologically incapable of being honest when I ask you a direct question. I will roll my eyes and talk about something else, forever incurious about your future opinions. So a lot of things bug me. But this post isn&rsquo;t about the stuff that just bugs me; this post is about the one thing that boils my blood, that sends me into hysterical fits of primordial rage, the ice pick in my brain that keeps me up at night. Especially when I&rsquo;m drunk, which, right now, I am. I will try to remain calm while writing this.</p>
+
+<p><strong>If you want to curse, curse. If you don&rsquo;t, don&rsquo;t.</strong></p>
+
+<h3>An example</h3>
+
+<p>This might require an example. So here you are, on Facebook, writing a post about your awesome job. Or Twitter or Tumbler or Gmail (this anger of mine is medium-independent). You want to say something strongly worded, something to express on no uncertain terms how great your day at work was. So far, so good. I love my job too; no shame in sharing on the internet. But then, in your excitement, you type out, &ldquo;My job is the sh*t!&rdquo;. You hit enter. Everyone can see it now: your job is the sh*it.</p>
+
+<p>If there were such a thing as baby angels, you would have just killed six-hundred and twenty of them.</p>
+
+<p>&ldquo;Shit&rdquo; has an &ldquo;i&rdquo; in it. I&rsquo;m pretty sure. Now, I&rsquo;m not a great speller either, and one of the weapons <strong>not</strong> regularly stocked in my arsenal of petty neuroses is anger about spelling. But you knew that &ldquo;shit&rdquo; doesn&rsquo;t have any asterisks in it, didn&rsquo;t you? And you wrote it anyway. On purpose. Why did you do that? WHY DID YOU DO THAT?</p>
+
+<p>I honestly, seriously, in all earnestness, do not understand. You misspelled a word with four letters in it.</p>
+
+<p><img src="/blog/images/facebook.png" alt="Need to start rationing exclamation marks" /></p>
+
+<p>You said the curse word. You wrote it to express the word and you successfully communicated that word to your audience, along with any associated meaning and connotation. So why the game of replace-the-letter?</p>
+
+<h3>It&rsquo;s everywhere</h3>
+
+<p>Once something like this bugs you, you see it everywhere. It&rsquo;s in <a href="http://gizmodo.com/5846087/stop-already-with-the-fcking-infographics">articles</a>. It&rsquo;s in <a href="http://www.bugcomic.com/comics/crappin-on-cartwheels/">web comics</a> (Jesus, you self-censor your own web comic? Why do you even have one?). <a href="http://www.amazon.com/Sh-t-My-Dad-Says/dp/0061992704">Book titles</a>. <a href="http://www.amazon.com/Greatest-Tits-Lords-Acid/dp/B0000C0F8Q">Album covers</a>. Magazines (Newsweek used to kill me with this, but it has apparently <a href="http://www.theatlanticwire.com/entertainment/2012/02/spy-already-covered-tina-browns-love-profanity/48633/">stopped</a>). It&rsquo;s in emails from your coworkers.</p>
+
+<p>Since there doesn&rsquo;t seem to be an appropriately <a href="http://english.stackexchange.com/questions/15036/what-name-for-bowdlerisation-with-asterisks-e-g-fck">specific word for this</a>, I&rsquo;ve decided to call it cursfuscation. It&rsquo;s a subspecies of bowdlerization. And it&rsquo;s one of the most irritating things on Earth.</p>
+
+<p>It bothers me because it&rsquo;s utterly pointless; it detracts from the readability without changing the content. Sure, you can read it, but you can also read th*s and it&rsquo;s still annoying. And no one has a cogent explanation for why they do it. Part of some shared fiction about properness? Just a thoughtless habit? An honest fear of the literal letters in curse words?</p>
+
+<p>If &ldquo;LOL&rdquo; is the nervous tick of the internet, then cursfuscation is its stutter.</p>
+
+<h3>Don&rsquo;t pretend you&rsquo;re not cursing</h3>
+
+<p>Maybe you don&rsquo;t like cursing. You think it&rsquo;s crass or just wrong. We differ in this respect, but fine, you think there are certain combinations of consonants and vowels which are off-limits to polite human communication. I sort of get where you&rsquo;re coming from, actually, and there are a few words I don&rsquo;t make a habit of saying. But you know what? I respond to my qualms about those words by not saying them. For example, I don&rsquo;t use the word &ldquo;nigger&rdquo; because I think it&rsquo;s shitty word that expresses a bunch of stuff I don&rsquo;t want to express. But, by trivial extension, I also don&rsquo;t write &ldquo;n*gger&rdquo; or &ldquo;n&mdash;-r&rdquo; or say &ldquo;nignog&rdquo; and pretend I&rsquo;m in the clear, because <em>it&rsquo;s the same word</em>. If the word is so bad, then why are you saying it? Do you really think that the morally reprehensible part of the word is the little vertical line with a dot above it? How has your <code>s/i/\*</code> avoided whatever culpability you feel for having used the word, in all of its actually-spelled-correctly glory? What&rsquo;s offensive about &ldquo;shit&rdquo; that isn&rsquo;t offensive about &ldquo;sh*t&rdquo;?</p>
+
+<p>My dad doesn&rsquo;t curse, ever, out of a strong ethical commitment of some kind. I don&rsquo;t understand it, but I give him props for <em>not actually cursing</em>. He doesn&rsquo;t say &ldquo;freakin&rdquo; or &ldquo;effin&rdquo; or &ldquo;f&amp;#!ing&rdquo; or&mdash;pretending for a moment that he watches TV other than <em>Law and Order</em>&mdash;&ldquo;fraking&rdquo;. He doesn&rsquo;t pretend that the letters F-U-C-K form some kind of hyper-specific satanic incantation, the apocalyptic consequences of which can only be avoided by not saying the exact right combination of sounds involved, but which it&rsquo;s perfectly reasonable to express the substance of whenever you feel like. He just doesn&rsquo;t say &ldquo;fuck&rdquo; because he thinks it&rsquo;s wrong to say &ldquo;fuck&rdquo;. Not complicated.</p>
+
+<h3>Who are you fooling?</h3>
+
+<p>Or maybe you&rsquo;re OK with cursing, but only in certain contexts, like hanging out with your friends. Maybe you&rsquo;re writing an email to a coworker and you want to be professional and serious. Professional, serious people, you think, speak only in the set of English words minus this particular seven. Maybe innocent children or prudish grandmas will read your writing, and they will be corrupted or offended by the raw power of your words. Fine, I get there are boundaries, sensibilities you don&rsquo;t want to offend. Mores. </p>
+
+<p>But who are you fooling? You think those bosses, children, and octogenarians will have <em>no idea</em> what you mean by &ldquo;b*tch&rdquo; and couldn&rsquo;t possibly figure it out? They&rsquo;ll think it says &ldquo;botch&rdquo;, right? Right?</p>
+
+<p>You&rsquo;ve only succeeded in insulting their intelligences. It&rsquo;s not even censorship, really; it&rsquo;s just minor obfuscation.</p>
+
+<p>But in fact, it&rsquo;s even worse than that: the asterisk doesn&rsquo;t even work if the reader doesn&rsquo;t know what it means. The whole point of saying something is to communicate that something to the listener, and the only thing distorting your words can accomplish is to sabotage that goal. That&rsquo;s why you made sure it was easy for everyone to understand by using a known cursifiscation convention. You wanted to make sure that everyone knew the word was &ldquo;bitch&rdquo; without, you seem to think, the word actually being &ldquo;bitch&rdquo;. You wanted to obfuscate your communication in name only, a sort of half-hearted nod and wink in the form of awkward reading. Who benefits?</p>
+
+<p>You said &ldquo;bitch&rdquo;; come to terms with that or stop saying it altogether. The middle road is wholly imagined.</p>
+
+<h3>Some kind of disconnect</h3>
+
+<p><img src="/blog/images/on_bullshit.jpg" alt="Much better" /></p>
+
+<p>Much better, right?</p>
+
+<p>As I understand it, cursfuscation started as a tacky way to circumvent obscenity laws, just like beeping on TV. In other words, the convention came about to make cursing in newspapers <em>easier</em>. Those newspapers that used &ldquo;f&mdash;&mdash;&rdquo; could have just <a href="http://www.nytimes.com/2008/07/13/opinion/13pubed.html?_r=1">not cursed</a>. They used dashes so that they <em>could</em> curse; they wanted to say &ldquo;fucking&rdquo; without getting in trouble. It stands to reason that if they prefer to curse, they would simply have done so plainly, had they been allowed. How the convention turned into a knee-jerky way of pretending <em>not</em> to curse is beyond me. Those laws are either no longer on the books or don&rsquo;t apply to you anyway, and you&rsquo;re allowed to curse to your heart&rsquo;s content. And you&rsquo;re making cursing <em>harder</em> for yourself and everyone who reads your writing. Why would you do that?</p>
+
+<p>So stop. Please. No more cursfuscation. Your intentionally transparent word manglings do no one any good. It&rsquo;s insulting to our intelligences and cringe-inducing to read. You will offend no one who won&rsquo;t be offended regardless. Spare us your dashes, your asterisks, your beeps, your twisted versions of the words you&rsquo;re trying, awkwardly, to communicate to us and <em>just fucking say it</em>.</p>
+
+<p>Or don&rsquo;t say it.</p>
+</div><a class="pull-right" href="http://github.com/icambron/isaaccambron.com/tree/master/source/blog/2012-05-04-if-you-want-to-curse-curse.html.markdown">Source</a><div class="clearfix"></div><hr /></div></div><div class="blog-article"><div class="blog-content"><h2><a href="/blog/2012/01/09/introducing-twix.html">Twix.js</a></h2><p class="blog-date">Jan  9, 2012</p><div class="blog-content-body"><p><img src="/blog/images/twix.png" alt="So delicious!" /></p>
+
+<p>I&rsquo;ve been working on a simple project for handling date and time ranges in JS. I have a long ways to go, but I have the first part working well: formatting date ranges. And that makes for a good introduction to the topic as a whole, so I figured I&rsquo;d blog about it.</p>
+
+<h3>Displaying time ranges</h3>
+
+<p>See, formatting date ranges so they can be read naturally isn&rsquo;t very easy. The general format on the web is something like:</p>
+<pre class="highlight plaintext"><code>Jan 26, 7:00 PM - Jan 26, 9:00 PM
+</code></pre>
+<p>Which isn&rsquo;t something you&rsquo;d ever say, but it&rsquo;s what happens when you treat a date range as nothing more than two dates, call <code>toString()</code> on each one, and then join them with a dash. It&rsquo;s easy, so everyone does it.</p>
+
+<p>But what I want to say is:</p>
+<pre class="highlight plaintext"><code>Jan 26, 7 - 9 PM
+</code></pre>
+<p>You might disagree. Maybe you live in France or something, and you want to say:</p>
+<pre class="highlight plaintext"><code>Jan 26, 19:00 - 21:00
+</code></pre>
+<p>Or maybe you&rsquo;re just the verbose type and want:</p>
+<pre class="highlight plaintext"><code>Thursday January 26th, 7pm - 9pm
+</code></pre>
+<h3>Twix</h3>
+
+<p>In any case, I have a JS library that can handle that. It&rsquo;s called <a href="https://github.com/icambron/twix.js">Twix.js</a>, and it&rsquo;s pretty cool. Here are those three examples:</p>
+<pre class="highlight javascript"><code><span class="c1">//takes dates or parses them</span>
+<span class="kd">var</span> <span class="nx">twix</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Twix</span><span class="p">(</span><span class="s2">"1/26/2012 7:00 PM"</span><span class="p">,</span> <span class="s2">"1/26/2012 9:00 PM"</span><span class="p">);</span>
+
+<span class="nx">twix</span><span class="p">.</span><span class="nx">format</span><span class="p">()</span>                           <span class="c1">//=&gt; Jan 26, 7 - 9 PM</span>
+<span class="nx">twix</span><span class="p">.</span><span class="nx">format</span><span class="p">({</span><span class="na">twentyFourHour</span><span class="p">:</span> <span class="kc">true</span><span class="p">})</span>     <span class="c1">//=&gt; Jan 26, 19:00 - 21:00</span>
+
+<span class="c1">//so I admit, this one is complicated</span>
+<span class="nx">twix</span><span class="p">.</span><span class="nx">format</span><span class="p">({</span>
+  <span class="na">showDayOfWeek</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="na">weekdayFormat</span><span class="p">:</span> <span class="s2">"dddd"</span><span class="p">,</span>
+  <span class="na">monthFormat</span><span class="p">:</span> <span class="s2">"MMMM"</span><span class="p">,</span>
+  <span class="na">dayFormat</span><span class="p">:</span> <span class="s2">"Do"</span><span class="p">,</span>
+  <span class="na">groupMeridiems</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">spaceBeforeMeridiem</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">meridiemFormat</span><span class="p">:</span> <span class="s2">"a"</span><span class="p">,</span>
+<span class="p">})</span>                            <span class="c1">//=&gt; Thursday January 26th, 7pm - 9pm</span>
+</code></pre>
+<p>It can also handle all sorts of different range sizes as well as all-day events.</p>
+
+<h3>Get it</h3>
+
+<p>I have a lot left to do, but the formatting stuff seems usable. Comprehensive docs, downloads, and finger paintings live on <a href="https://github.com/icambron/twix.js">Github</a>.</p>
+</div><a class="pull-right" href="http://github.com/icambron/isaaccambron.com/tree/master/source/blog/2012-01-09-introducing-twix.html.markdown">Source</a><div class="clearfix"></div><hr /></div></div><div class="blog-article"><div class="blog-content"><h2><a href="/blog/2011/12/24/another-year-another-editor.html">Another year, another editor</a></h2><p class="blog-date">Dec 24, 2011</p><div class="blog-content-body"><h3>The constant search</h3>
+
+<p>I&rsquo;m pretty much always looking for a new text editor. Every once in a while, I get pissed off enough at Emacs to sit down with a six-pack and a freshly downloaded editor and see if I can, you know, use the damn thing. I usually last about 15 minutes before I go scurrying back to Emacs, tail between my legs and slightly drunk.</p>
+
+<p><a href="/blog/images/emacs.png"><img src="/blog/images/emacs_small.png" alt="Where I spend my day" /></a></p>
+
+<p>The thing is, I hate Emacs. It&rsquo;s terrible at so many things. Its ecosystem is a clusterfuck of poorly maintained modes and broken extensions. It&rsquo;s chalk full of  interface idiosyncrasies that make it painful when toggling between other programs. The default keybindings require you to make a cat&rsquo;s cradle with your fingers. The shell is broken in half a dozen ways. ELisp is weird. And goddamn is Emacs slow.</p>
+
+<p>And yet&hellip;I come back to it every time. It&rsquo;s the editor I can&rsquo;t break up with. This is not because it has some special place in my heart; it&rsquo;s because every other editor really blows. They require you to use the mouse to do the most basic things. They throw weird dialogs at you, and those dialogs break all the conventions the rest of the editor uses. They think in files instead of buffers. They provide you cool autocomplete and go-to-definition features but ignore your need to actually edit text. They come with crummy defaults and then make them painful to change.</p>
+
+<p>All that, and I&rsquo;m actually a <em>casual</em> Emacs user. I&rsquo;m not one of those guys with 5000-line .emacs files who check their email in it. For all my time using it, I&rsquo;m a noob in Emacs land, struggling to efficiently edit text. It&rsquo;s just that it sucks less than other editors.</p>
+
+<p>But that doesn&rsquo;t stop me from trying to do better. Here at Drunken Coder, we&rsquo;re always stumbling blindly into the arms of new, shiny editors, having sloppy one-night stands with them, and never calling them back.</p>
+
+<h3>A brief history of time</h3>
+
+<p>Sometimes those one-night stands turn into flings, or get drawn out into rebound relationships driven by some particularly nasty fight with E (we&rsquo;re going to call it E from now, I&rsquo;ve just decided). They&rsquo;re not necessarily any better than the quickly discarded JEdits and Bluefishes and so on; it&rsquo;s just that they stuck around somehow. Maybe it&rsquo;s just that they wanted me? Here are the ones who made it to a second date:</p>
+
+<ul>
+<li><p>Eclipse/RAD - It knows Java and understood the <s>Byzantine boondoggle</s> <a href="http://en.wikipedia.org/wiki/IBM_Workplace">sophisticated project</a> I was working on. Otherwise, Eclipse is just a bloated, sluggish mess of menus and modes and clicking and NullPointerExceptions.</p></li>
+<li><p><a href="http://www.slickedit.com/products/slickedit">SlickEdit</a> - It&rsquo;s great at editing text, is hugely customizable, and has a few <a href="http://www.slickedit.com/products/slickedit/cool-features#surroundwith">features</a> I still miss. But it&rsquo;s ugly, the UI is awkward, the customizations are in a weird C-like language, and&mdash;when I used it&mdash;it couldn&rsquo;t parse non-ancient versions of C#. Oh, and it&rsquo;s expensive and you have to pay each year to keep up.</p></li>
+<li><p>Visual Studio - Can parse C#, but is completely unhelpful without an <a href="http://www.jetbrains.com/resharper/">expensive third-party plugin</a> (which is itself very nice). More importantly, VS may be the <em>worst text editor I&rsquo;ve ever used</em>. Seriously, just awful. And out of contention anyway &mdash; I don&rsquo;t run Windows anymore.</p></li>
+<li><p>RubyMine - It&rsquo;s packed with nice Ruby features and it runs well on Linux, but it can&rsquo;t escape its Eclipse heritage. Too clunky.</p></li>
+</ul>
+
+<p>My number one issue with random editors, if you want to know the slightly inebriated and tangential truth, is that they don&rsquo;t treat their menus as first-class buffers. They&rsquo;ve let you make whatever customizations you want to how text in the actual file is edited (ctrl+k for &ldquo;kill line&rdquo; or ctrl+~ ctrl+\ for &ldquo;transpose then upcase then wrap in playful emoticons&rdquo; or whatever), but those customizations don&rsquo;t work when you&rsquo;ve called up a file switcher dialog, because the guy who wrote it just used the system&rsquo;s text box control. It&rsquo;s fucking infuriating.</p>
+
+<h3>Sublime Text 2</h3>
+
+<p>I&rsquo;ve been working in Rails and Node and random stuff for almost two years now, and I&rsquo;m once again tired of E. In fact, it&rsquo;s been doing this weird thing where sometimes the text disappears for no reason. Also, I have now tried every JS mode I can find and not one is even passable. I could debug all that or hack away at a JS mode until it does what I want, but then again, I could also be hacking on something new and exciting instead of old and broken, or, you know, doing actual work.</p>
+
+<p>Of course, it&rsquo;s not like any of my old complaints about E have been magically fixed. That thing is stuck in time. It&rsquo;s like hunting with a musket.</p>
+
+<p>It&rsquo;s time for another breakup.</p>
+
+<p>Enter the new flavor of the week. <a href="http://www.sublimetext.com/">Sublime Text 2</a> is gorgeous, fast, and customizable. And it&rsquo;s made it past round one: can I stand it?</p>
+
+<p><a href="/blog/images/sublime.png"><img src="/blog/images/sublime_small.png" alt="Subliminal messages" /></a></p>
+
+<p>Bullet points? Bullet points:</p>
+
+<ul>
+<li><p>It&rsquo;s really clean and acts like a real text editor.</p></li>
+<li><p>It uses TextMate language modes, so it taps into a big existing ecosystem (I&rsquo;ve been amazed at how much better its understanding of Ruby is than my Emacs mode).</p></li>
+<li><p>It&rsquo;s got that cool minimap. I can&rsquo;t even imagine how that would ever be useful, but it&rsquo;s sexy as hell. </p></li>
+<li><p>The file switching and code browsing is quite good, though I&rsquo;d rather get rid of the tabs and groups and just have a list of open files.</p></li>
+<li><p>You customize it in Python and there seems to be a solid community around doing just that.</p></li>
+</ul>
+
+<h3>The long hard road out of Hell</h3>
+
+<p>Switching editors is really hard, and I&rsquo;m not where I want to be with Sublime yet. Partially that&rsquo;s my desire to go whole hog. For example I&rsquo;d like to give up the ctrl+x prefix on commands (I&rsquo;m sick of mindlessly hitting them in other programs) even though I think they&rsquo;re mostly reasonable. So there&rsquo;s a steeper learning curve and I keep accidentally closing buffers trying to do kill-region, or cutting text while trying to save a file. It would be like coding drunk if I weren&rsquo;t already coding drunk.</p>
+
+<p>Not there isn&rsquo;t enough mental retraining to do just from switching editors.</p>
+
+<p>I also need to get it customized to where I&rsquo;m actually reasonably productive relative to E, regardless of how painful E is. That&rsquo;s a big time investment and one of the reasons I&rsquo;ve dropped many would-be editors. It doesn&rsquo;t help that the Sublime documentation is almost non-existent and you have to glean even the basic customization paradigm from the support forums. (I&rsquo;m sure it&rsquo;s harder for me; I have the feeling most of the user base is TextMate converts and have some relevant prior knowledge.)</p>
+
+<p>And I already have complaints:</p>
+
+<ul>
+<li><p>I can&rsquo;t seem to make misspelled words not show up in retina-searing red. </p>
+
+<ul>
+<li>Oh, and there seems to be some sort of bug about spell-checking words in brackets. See that in the screenshot?</li>
+</ul></li>
+<li><p>I can&rsquo;t run a terminal in it (for Linux anyway; it has one for Mac). </p></li>
+<li><p>I don&rsquo;t know how to override parts of a theme without forking the whole theme. </p></li>
+<li><p>The mark/kill/yank stuff is poorly implemented and I had to pull in (and edit) a third-party plugin just for that.</p></li>
+<li><p>It&rsquo;s a tiny bit weird with line wraps.</p></li>
+<li><p>There&rsquo;s what I suspect is Linux-specific clunkiness in opening files and projects.</p></li>
+</ul>
+
+<p>So we&rsquo;ll see. I might be slinking back to Emacs a few weeks.</p>
+</div><a class="pull-right" href="http://github.com/icambron/isaaccambron.com/tree/master/source/blog/2011-12-24-another-year-another-editor.html.markdown">Source</a><div class="clearfix"></div><hr /></div></div><div class="blog-article"><div class="blog-content"><h2><a href="/blog/2011/10/14/programming-languages-matter.html">Programming Languages Matter</a></h2><p class="blog-date">Oct 14, 2011</p><div class="blog-content-body"><p><a href="http://en.wikipedia.org/wiki/Structure_and_Interpretation_of_Computer_Programs#Characters">Ben Bitdiddle and Alyssa P. Hacker</a> are at a bar, at least three martinis deep. You&rsquo;re at nearby table and overhear their loud conversation:</p>
+
+<blockquote>
+<p><strong>BB</strong>: I don&rsquo;t want that job, because I&rsquo;m a Java programmer and they&rsquo;re a Python shop, and&mdash;</p>
+
+<p><strong>APH</strong>: What do you mean, you&rsquo;re a &ldquo;Java programmer&rdquo;?</p>
+
+<p><strong>BB</strong>: Well, you know, some people are Perl programmers, and other people are Java programmers, and other&mdash;</p>
+
+<p><strong>APH</strong>: No. Of all the stupid ways you can sort programmers into buckets&mdash;back-end vs front-end, application vs operating system, enterprise vs consumer&mdash;why would you choose to define yourself by the programming language you typically use?</p>
+
+<p><strong>BB</strong>: Well, I know Java. I don&rsquo;t know Python. It says &ldquo;Java programmer&rdquo; next to my name on my resume.</p>
+
+<p><strong>APH</strong>: If you want to put yourself into a box, then define yourself by the kinds of problems you want to solve, your style of problem solving, or something like that. A programming language is a tool; within certain parameters, you can do anything with any of them. I mean, honestly, how long does it take you to learn a new language? Some new syntax should be trivial compared to learning, say, how to architect a scalable system, and that&rsquo;s the same in any language.</p>
+</blockquote>
+
+<p>Then you go back to whatever more interesting conversation you were having. You&rsquo;re pretty sure they go home together and have loud, punny sex. But let&rsquo;s talk about what they said. To a first order approximation, APH &gt; BB. As Steve Yegge has <a href="http://steve-yegge.blogspot.com/2007/12/codes-worst-enemy.html">observed</a>, &ldquo;an &lsquo;X programmer&rsquo;, for any value of X, is a weak player.&rdquo; It&rsquo;s true enough, and I&rsquo;m always annoyed when I&rsquo;m called a [whatever language I&rsquo;m using at the time] programmer. But APH is very wrong about <em>why</em> BB shouldn&rsquo;t care so much about his Java identity.</p>
+
+<p>Defining yourself as, say, a Java programmer has some serious pitfalls. First, Java isn&rsquo;t the right tool for every job, and in fact is very awkward for some of them. As a trivial example, you wouldn&rsquo;t use it to write a shell script to copy around some files. I think everyone gets that it&rsquo;s just too verbose and structured to do job well.</p>
+
+<p>To generalize that, the reason BB and APH are both wrong is that defining yourself by a language limits your thinking. Like a real-life spoken language, you can&rsquo;t think about <a href="http://plato.stanford.edu/entries/language-thought/">things you can&rsquo;t put into words</a>. Language isn&rsquo;t a way of capturing thoughts; it&rsquo;s the building blocks of those thoughts. To give a simplistic example, people in some primitive cultures can&rsquo;t differentiate green and yellow because they don&rsquo;t have different words for them. Similarly, if you&rsquo;re stuck thinking in Java (and you are, even if you&rsquo;re thinking about something wildly abstract, like APH&rsquo;s &ldquo;architecting scalable systems&rdquo;, whatever that means), then you&rsquo;re missing entire programming paradigms, and the chances are you&rsquo;re building something the wrong way. Maybe the best way to think about structuring your program is in terms of Lisp macros or Haskell existential types or continuations or Erlang actors or Node events or monads. But those aren&rsquo;t primitives you know, so you can&rsquo;t build the higher-level structures of your program around them.</p>
+
+<p>And worse, <em>you don&rsquo;t even know it</em>. You can&rsquo;t even conceptualize it. If you&rsquo;d never seen a &ldquo;scripting&rdquo; language, you <em>would</em> start your little file-copying programs with <code>public static void main(String[] args)</code>, and you wouldn&rsquo;t think anything of it. It would just be The Way Things Are Done.</p>
+
+<p>In any language, I find myself mixing and matching programming paradigms borrowed from other languages, or approximating language features I don&rsquo;t have available. Java programmers sometimes fake closures by creating anonymous inner types, and while it&rsquo;s a pretty crummy approximation, it goes a long way towards solving some otherwise painful programming problems. But first you have to know what a closure is and what it&rsquo;s good for. And you might know that because you&rsquo;ve worked with programming languages where functions are first-class. To get more exotic, if I knew Haskell in any depth, I might use monads as part of problem solving toolkit, and that might allow me to structure, say, a Ruby program with better data abstractions. But I can&rsquo;t really know that until I figure out what monads are all about. Note to self: learn Haskell.</p>
+
+<p>Of course, it goes deeper than language features: languages are more than just syntax trees. A lot more. In practice, languages are tightly coupled with standard libraries, platforms, and ecosystems. These are usually impedance-matched with the language itself; have you ever noticed that Java libraries tend to be verbose and explicit while Ruby libraries tend to be terse and slick? That extends to how the API interfaces are structured, the extension points, the level of programatic openness, everything. When you choose a language, you&rsquo;re also choosing a programming philosophy, because everything built for you is built with that philosophy.</p>
+
+<p>You might have decided you strongly prefer programming under a certain philosophy. Let&rsquo;s say&mdash;and we&rsquo;re being incredibly simplistic about the salient features of languages&mdash;you really like dynamic, hack-friendly languages with lots of syntactic shortcuts, because you&rsquo;re a dynamic, hacky, slick kind of dude. That&rsquo;s fine, I&rsquo;m with you. But what happens when you come across a problem that&rsquo;s best solved with a statically typed language with lots of imposed structure? Do you abandon the whole problem, or do you pigeon hole it into your programming aesthetic? You should instead learn some alternative techniques indigenous to other languages, or even just solve the problem in one of those languages. Do you really think your language is so perfect that it contains every concept you might need?</p>
+
+<p>There are some good reasons you might build something in Java (or any other language). But there are also an awful lot of bad ones, the greatest of which is that you just happen to know Java. So yeah, BB should maybe look more closely at that Python gig. And APH should think a bit harder about programming languages, and why they might be important.</p>
+</div><a class="pull-right" href="http://github.com/icambron/isaaccambron.com/tree/master/source/blog/2011-10-14-programming-languages-matter.html.markdown">Source</a><div class="clearfix"></div><hr /></div></div><p><a href="/blog/page/3/">Next page</a></p></div></div></div><script type="text/javascript">!function(e,a,t,n,c,o,s){e.GoogleAnalyticsObject=c,e[c]=e[c]||function(){(e[c].q=e[c].q||[]).push(arguments)},e[c].l=1*new Date,o=a.createElement(t),s=a.getElementsByTagName(t)[0],o.async=1,o.src=n,s.parentNode.insertBefore(o,s)}(window,document,"script","//www.google-analytics.com/analytics.js","ga"),ga("create","UA-52148016-1","auto"),ga("send","pageview");</script></body></html>

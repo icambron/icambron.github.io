@@ -1,0 +1,25 @@
+(function() {
+  (function($) {
+    return $.fn.extend({
+      showDemo: function(options) {
+        var $modal;
+        $modal = $(options.modal);
+        return this.each(function() {
+          var $obj, demo;
+          $obj = $(this);
+          demo = $obj.attr('data-demo');
+          return $obj.click(function() {
+            var $frame, $header;
+            $frame = $('<iframe>').addClass("demo-frame").attr('src', "demos/" + demo + ".html").attr('frameborder', '0').attr('width', '100%');
+            $header = $modal.find('.modal-header');
+            $header.attr('class', "modal-header " + demo + "-demo-header");
+            $header.find('h2').text(demo + " Demo");
+            $modal.find('.modal-body').empty().append($frame);
+            return $modal.modal('show');
+          });
+        });
+      }
+    });
+  })(jQuery);
+
+}).call(this);
