@@ -3,20 +3,46 @@
 		<title>Isaac Cambron</title>
 		<meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+		<link rel="stylesheet" href="pico.min.css">
+
+	<style>
+		h1 {
+			text-align: center;
+		}
+
+		.section {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.links {
+			margin-top: 15px;
+		}
+
+		.mast {
+			text-align: center
+		}
+
+		.headshot > img {
+			border-radius: 4px;
+		}
+
+	</style>
+
 	</head>
 
 	<body>
 		<main class="container">
+			<h1>Isaac Cambron</h1>
 			<div class="grid">
-				<div>
-					<h1>Isaac Cambron</h1>
-					<h3>I build stuff. I'm pretty good at it</h3>
+				<div class="section mast">
+					<h3>I build stuff. I'm pretty good at it.</h3>
 				</div>
-				<div>
+				<div class="section headshot">
 					<img src="headshot.jpg"/>
 				</div>
-				<div>
+				<div class="section links">
 					<ul>
 						<li><a href="https://github.com/icambron">Github</a></li>
 						<li><a href="https://www.linkedin.com/in/isaaccambron/">LinkedIn</a></li>
